@@ -1,4 +1,1162 @@
----
-layout: home
-# Index page
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amirul Hakim | KingPinzz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #060810;
+    --bg2: #0b0f1a;
+    --bg3: #0f1525;
+    --accent: #00f5a0;
+    --accent2: #00c8ff;
+    --accent3: #7b61ff;
+    --text: #e8edf5;
+    --text-muted: #5a6680;
+    --text-dim: #8a9bb8;
+    --border: rgba(0, 245, 160, 0.12);
+    --border2: rgba(0, 200, 255, 0.12);
+    --glow: 0 0 30px rgba(0, 245, 160, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── SCANLINE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 3rem;
+    height: 64px;
+    background: rgba(6, 8, 16, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--text-dim); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 0; }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* ── HERO ── */
+  #home {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,245,160,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,160,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent);
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,245,160,0.06) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-content { position: relative; z-index: 1; }
+
+  .hero-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: var(--accent);
+  }
+
+  h1.hero-name {
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+  }
+
+  h1.hero-name .line2 {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(0,245,160,0.4);
+  }
+
+  .hero-alias {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    color: var(--accent2);
+    margin-bottom: 2rem;
+    letter-spacing: 0.15em;
+  }
+
+  .hero-alias::before { content: '> '; color: var(--text-muted); }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    max-width: 500px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+  }
+
+  .hero-pills {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    background: rgba(0,245,160,0.03);
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.8rem 2rem;
+    background: var(--accent);
+    color: #060810;
+    border: none;
+    border-radius: 2px;
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background: #00d98a;
+    box-shadow: 0 0 20px rgba(0,245,160,0.3);
+  }
+
+  .btn-outline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.8rem 2rem;
+    background: transparent;
+    color: var(--accent2);
+    border: 1px solid rgba(0,200,255,0.3);
+    border-radius: 2px;
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-outline:hover {
+    background: rgba(0,200,255,0.05);
+    border-color: var(--accent2);
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  h2.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+  }
+
+  /* ── ABOUT ── */
+  #about { background: var(--bg2); }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    font-size: 1rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-text p strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .strengths-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .strength-card {
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg3);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .strength-card:hover {
+    border-color: rgba(0,245,160,0.3);
+    transform: translateY(-2px);
+  }
+
+  .strength-icon {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+  }
+
+  .strength-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* ── EXPERIENCE ── */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, var(--accent) 0%, transparent 100%);
+    opacity: 0.3;
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0 0 2.5rem 2rem;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -0.3rem; top: 0.35rem;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px rgba(0,245,160,0.5);
+  }
+
+  .timeline-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-role {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+
+  .timeline-company {
+    font-size: 0.85rem;
+    color: var(--accent2);
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-location {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .timeline-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.25rem 0.6rem;
+    background: rgba(123,97,255,0.1);
+    border: 1px solid rgba(123,97,255,0.2);
+    border-radius: 2px;
+    color: #a08fff;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── ACHIEVEMENTS ── */
+  #achievements { background: var(--bg2); }
+
+  .achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  .achievement-card {
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg3);
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .achievement-card::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .achievement-card:hover {
+    border-color: rgba(0,245,160,0.2);
+    transform: translateX(4px);
+  }
+
+  .achievement-card:hover::after { opacity: 1; }
+
+  .achievement-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    min-width: 36px;
+  }
+
+  .achievement-body { flex: 1; }
+
+  .achievement-place {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.3rem;
+  }
+
+  .achievement-place.gold { color: #fbbf24; }
+  .achievement-place.silver { color: #94a3b8; }
+  .achievement-place.bronze { color: #c87533; }
+  .achievement-place.top { color: var(--accent2); }
+
+  .achievement-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+
+  .achievement-location {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+  }
+
+  /* ── CERTIFICATIONS ── */
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cert-card {
+    padding: 1.5rem;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    background: linear-gradient(135deg, var(--bg3) 0%, rgba(0,200,255,0.03) 100%);
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cert-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -50%;
+    width: 150px; height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,200,255,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cert-card:hover {
+    border-color: rgba(0,200,255,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,200,255,0.05);
+  }
+
+  .cert-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  .cert-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    line-height: 1.4;
+  }
+
+  .cert-issuer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* ── PROJECTS ── */
+  #projects { background: var(--bg2); }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg3);
+    overflow: hidden;
+    transition: all 0.25s;
+    position: relative;
+  }
+
+  .project-card:hover {
+    border-color: rgba(0,245,160,0.25);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .project-header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .project-award {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.3rem 0.75rem;
+    background: rgba(251,191,36,0.1);
+    border: 1px solid rgba(251,191,36,0.2);
+    border-radius: 2px;
+    color: #fbbf24;
+    letter-spacing: 0.08em;
+  }
+
+  .project-body { padding: 1.25rem 1.5rem; }
+
+  .project-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+
+  .project-desc {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+  }
+
+  .project-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+
+  .project-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.25rem 0.6rem;
+    background: rgba(0,245,160,0.07);
+    border: 1px solid rgba(0,245,160,0.15);
+    border-radius: 2px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  .project-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent2);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    letter-spacing: 0.05em;
+    transition: gap 0.2s;
+  }
+
+  .project-link:hover { gap: 0.7rem; }
+  .project-link span { transition: transform 0.2s; }
+  .project-link:hover span { transform: translateX(3px); }
+
+  /* ── CONTACT ── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+
+  .contact-intro {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+
+  .contact-items { display: flex; flex-direction: column; gap: 1rem; }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg3);
+    text-decoration: none;
+    transition: all 0.2s;
+    color: inherit;
+  }
+
+  .contact-item:hover {
+    border-color: rgba(0,245,160,0.3);
+    background: rgba(0,245,160,0.03);
+  }
+
+  .contact-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+
+  .contact-value {
+    font-size: 0.9rem;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .contact-icon {
+    width: 36px; height: 36px;
+    border-radius: 4px;
+    background: rgba(0,245,160,0.08);
+    border: 1px solid rgba(0,245,160,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    background: var(--bg3);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  .social-link:hover {
+    border-color: rgba(0,200,255,0.3);
+    color: var(--accent2);
+  }
+
+  .social-link::before {
+    content: '→';
+    color: var(--accent2);
+    transition: transform 0.2s;
+  }
+
+  .social-link:hover::before { transform: translateX(4px); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+
+  footer span { color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 3px; height: 1em;
+    background: var(--accent);
+    vertical-align: text-bottom;
+    margin-left: 4px;
+    animation: blink 1.2s step-end infinite;
+  }
+
+  .fade-up {
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .fade-up-1 { animation-delay: 0.1s; }
+  .fade-up-2 { animation-delay: 0.2s; }
+  .fade-up-3 { animation-delay: 0.3s; }
+  .fade-up-4 { animation-delay: 0.4s; }
+  .fade-up-5 { animation-delay: 0.5s; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: rgba(0,245,160,0.3); border-radius: 2px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+
+    .about-grid,
+    .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+
+    h1.hero-name { font-size: clamp(2.5rem, 12vw, 4rem); }
+
+    .container { padding: 0 1.5rem; }
+    section { padding: 4rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#home" class="nav-logo">KingPinzz<span>.sh</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#achievements">ctf</a></li>
+    <li><a href="#certifications">certs</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="home">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-tag fade-up fade-up-1">CYBERSECURITY · NETWORK · CLOUD</div>
+      <h1 class="hero-name fade-up fade-up-2">
+        Amirul
+        <span class="line2">Hakim</span>
+      </h1>
+      <p class="hero-alias fade-up fade-up-3">KingPinzz<span class="cursor"></span></p>
+      <p class="hero-desc fade-up fade-up-4">Passionate about securing the digital frontier through cybersecurity, network engineering, and cloud computing.</p>
+      <div class="hero-pills fade-up fade-up-4">
+        <span class="pill">CTF Competitor</span>
+        <span class="pill">Pentest</span>
+        <span class="pill">Cloud Architect</span>
+        <span class="pill">IT Infrastructure</span>
+      </div>
+      <div class="hero-cta fade-up fade-up-5">
+        <a href="#projects" class="btn-primary">View Projects</a>
+        <a href="#contact" class="btn-outline">Get In Touch</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">About Me</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm a <strong>cybersecurity enthusiast</strong> and network engineering professional, constantly exploring the frontiers of cloud technology and digital security.</p>
+        <p>My journey spans from academic excellence at <strong>Universiti Teknologi MARA</strong> to hands-on industry experience at Roche as an IT Infrastructure intern, always driven by the mission to make the digital world more secure.</p>
+        <p>Currently serving as a <strong>Cybersecurity Analyst</strong> at Yayasan Digital Malaysia, with experience in DevSecOps, threat intelligence, and cloud architecture.</p>
+
+        <div style="margin-top: 2.5rem;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.15em; margin-bottom: 1rem;">— EXPERIENCE</div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-date">Sep 2024 – Present</div>
+              <div class="timeline-role">Intern IT Infrastructure</div>
+              <div class="timeline-company">Roche · Petaling Jaya</div>
+              <div class="timeline-location">Full-time · Hybrid</div>
+              <div class="timeline-tags">
+                <span class="tag">Network Design</span>
+                <span class="tag">Network Engineering</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-date">Aug 2023 – Present</div>
+              <div class="timeline-role">Cybersecurity Analyst</div>
+              <div class="timeline-company">Yayasan Digital Malaysia · Putrajaya</div>
+              <div class="timeline-location">Part-time · Hybrid</div>
+              <div class="timeline-tags">
+                <span class="tag">InfoSec Awareness</span>
+                <span class="tag">Public Speaking</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-date">Feb 2024 – Mar 2024</div>
+              <div class="timeline-role">DevSecOps – Infra Team</div>
+              <div class="timeline-company">Confidential · On-site</div>
+              <div class="timeline-location">Part-time</div>
+              <div class="timeline-tags">
+                <span class="tag">ELK Stack</span>
+                <span class="tag">Threat Management</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-date">Sep 2022 – Present</div>
+              <div class="timeline-role">Student</div>
+              <div class="timeline-company">Universiti Teknologi MARA · Shah Alam</div>
+              <div class="timeline-location">Full-time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.15em; margin-bottom: 1.5rem;">— CORE STRENGTHS</div>
+        <div class="strengths-grid">
+          <div class="strength-card">
+            <div class="strength-icon">[ SEC ]</div>
+            <div class="strength-name">Security</div>
+          </div>
+          <div class="strength-card">
+            <div class="strength-icon">[ NET ]</div>
+            <div class="strength-name">Networking</div>
+          </div>
+          <div class="strength-card">
+            <div class="strength-icon">[ CLD ]</div>
+            <div class="strength-name">Cloud</div>
+          </div>
+          <div class="strength-card">
+            <div class="strength-icon">[ INV ]</div>
+            <div class="strength-name">Analysis</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ACHIEVEMENTS ── -->
+<section id="achievements">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">CTF & Competitions</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="achievements-grid">
+      <div class="achievement-card">
+        <div class="achievement-year">2024</div>
+        <div class="achievement-body">
+          <div class="achievement-place silver">2ND PLACE</div>
+          <div class="achievement-name">SIBER SIAGA : iHACK 2024</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-year">2024</div>
+        <div class="achievement-body">
+          <div class="achievement-place top">4TH PLACE</div>
+          <div class="achievement-name">Curtin Malaysia CTF Hackathon</div>
+          <div class="achievement-location">24-hour Nationwide Online</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-year">2024</div>
+        <div class="achievement-body">
+          <div class="achievement-place top">5TH PLACE</div>
+          <div class="achievement-name">Forensics Game — IBOH</div>
+          <div class="achievement-location">Asia Pacific University (APU)</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-year">2023</div>
+        <div class="achievement-body">
+          <div class="achievement-place silver">1ST RUNNER UP + SPECIAL</div>
+          <div class="achievement-name">Cydes Cyber Defence CTF War Zone</div>
+          <div class="achievement-location">MITEC, Kuala Lumpur</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-year">2023</div>
+        <div class="achievement-body">
+          <div class="achievement-place gold">1ST PLACE</div>
+          <div class="achievement-name">PETRONAS Inter-University CTF (Qualifying)</div>
+          <div class="achievement-location">Kuala Lumpur Convention Centre</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-year">2023</div>
+        <div class="achievement-body">
+          <div class="achievement-place top">4TH PLACE</div>
+          <div class="achievement-name">SIBER SIAGA CTF : CODE COMBAT</div>
+          <div class="achievement-location">Kuala Lumpur Convention Centre</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-year">2023</div>
+        <div class="achievement-body">
+          <div class="achievement-place top">6TH PLACE</div>
+          <div class="achievement-name">WorldSkills Malaysia University Challenge</div>
+          <div class="achievement-location">Cybersecurity Category</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-year">2023</div>
+        <div class="achievement-body">
+          <div class="achievement-place top">6TH PLACE</div>
+          <div class="achievement-name">PETRONAS Inter-University CTF (Finals)</div>
+          <div class="achievement-location">Kuala Lumpur Convention Centre</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-year">2023</div>
+        <div class="achievement-body">
+          <div class="achievement-place top">6TH PLACE</div>
+          <div class="achievement-name">Game Of Hacker (GOH) CTF</div>
+          <div class="achievement-location">UniKL</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-year">2023</div>
+        <div class="achievement-body">
+          <div class="achievement-place top">15TH PLACE</div>
+          <div class="achievement-name">Wargames.MY CTF — Pro Category</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-year">2023</div>
+        <div class="achievement-body">
+          <div class="achievement-place top">TOP 20</div>
+          <div class="achievement-name">ASEAN Battle of Hackers (ABOH)</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="achievement-year">2022</div>
+        <div class="achievement-body">
+          <div class="achievement-place top">TOP 20</div>
+          <div class="achievement-name">iHACK SIBER SIAGA Hacking & Defence CTF</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CERTIFICATIONS ── -->
+<section id="certifications">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Certifications</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="certs-grid">
+      <div class="cert-card">
+        <div class="cert-badge">CNPEN</div>
+        <div class="cert-name">Certified Network Pentester</div>
+        <div class="cert-issuer">The SecOps Group</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-badge">ACP</div>
+        <div class="cert-name">Alibaba Cloud Certified Professional</div>
+        <div class="cert-issuer">Alibaba Cloud</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-badge">CNSP</div>
+        <div class="cert-name">Certified Network Security Practitioner</div>
+        <div class="cert-issuer">The SecOps Group</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-badge">GCP</div>
+        <div class="cert-name">Professional Cloud Architect</div>
+        <div class="cert-issuer">Google Cloud</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-badge">WEB</div>
+        <div class="cert-name">Practical Web App Security and Testing</div>
+        <div class="cert-issuer">TCM Security</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-badge">GCS</div>
+        <div class="cert-name">Google Cybersecurity Specialization</div>
+        <div class="cert-issuer">Google · Coursera</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Projects</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-header">
+          <div></div>
+          <span class="project-award">★ GOLD — i-SIIDEC 2024</span>
+        </div>
+        <div class="project-body">
+          <div class="project-name">Secure File Storage on Cloud</div>
+          <p class="project-desc">Gold award winner at i-SIIDEC 2024 international competition. Implemented AES encryption and Zero Trust Tunnel for end-to-end secure cloud storage.</p>
+          <div class="project-tags">
+            <span class="project-tag">Cloud</span>
+            <span class="project-tag">AES Encryption</span>
+            <span class="project-tag">Zero Trust</span>
+          </div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-header">
+          <div></div>
+          <span class="project-award">Hackathon</span>
+        </div>
+        <div class="project-body">
+          <div class="project-name">AI-Powered Security Analyzer</div>
+          <p class="project-desc">Comprehensive cybersecurity solution combining VirusTotal API, OpenAI GPT, and Machine Learning for real-time threat detection and analysis.</p>
+          <div class="project-tags">
+            <span class="project-tag">AI / ML</span>
+            <span class="project-tag">VirusTotal</span>
+            <span class="project-tag">Threat Detection</span>
+          </div>
+          <a href="https://github.com/miroollya/godam" class="project-link" target="_blank">
+            View on GitHub <span>→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Contact</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <p class="contact-intro">Interested in collaborating or have a project in mind? I'm always open to new opportunities in cybersecurity and cloud infrastructure.</p>
+        <div class="contact-items">
+          <a href="mailto:hakimboredzz@gmail.com" class="contact-item">
+            <div class="contact-icon">@</div>
+            <div>
+              <div class="contact-label">Email</div>
+              <div class="contact-value">hakimboredzz@gmail.com</div>
+            </div>
+          </a>
+          <a href="tel:+60126068683" class="contact-item">
+            <div class="contact-icon">#</div>
+            <div>
+              <div class="contact-label">Phone</div>
+              <div class="contact-value">+60 12-606 8683</div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent2); letter-spacing: 0.15em; margin-bottom: 1.5rem;">— FIND ME ONLINE</div>
+        <div class="social-links">
+          <a href="https://miroollya.github.io/" class="social-link" target="_blank">Blog / GitHub Pages</a>
+          <a href="https://github.com/miroollya" class="social-link" target="_blank">GitHub · @miroollya</a>
+          <a href="https://www.linkedin.com/in/amirul-hakim-mohd-yusri-98b605270/" class="social-link" target="_blank">LinkedIn Profile</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span>KingPinzz</span> · Amirul Hakim Mohd Yusri · Cybersecurity &amp; Network Engineering
+</footer>
+
+</body>
+</html>
