@@ -323,13 +323,27 @@ h2.sec-t{font-size:2.1rem;font-weight:800;letter-spacing:-0.025em}
 .cert-c{
   padding:1.5rem;border:1px solid var(--border2);border-radius:6px;
   background:var(--card);transition:all 0.22s;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;gap:0;
 }
 .cert-c::after{content:'';position:absolute;top:0;right:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--accent2),transparent);opacity:0;transition:opacity 0.22s}
 .cert-c:hover{border-color:rgba(0,200,255,0.28);transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,0.35)}
 .cert-c:hover::after{opacity:1}
-.cert-b{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--accent2);margin-bottom:0.75rem;letter-spacing:0.06em}
-.cert-n{font-size:0.9rem;font-weight:600;color:var(--text);margin-bottom:0.35rem;line-height:1.4}
+.cert-link{text-decoration:none;color:inherit;cursor:pointer}
+.cert-logo-wrap{display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem}
+.cert-logo-badge{
+  width:42px;height:42px;border-radius:8px;flex-shrink:0;
+  border:1px solid;display:flex;align-items:center;justify-content:center;
+}
+.cert-b{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--accent2);margin-bottom:0.4rem;letter-spacing:0.06em}
+.cert-n{font-size:0.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem;line-height:1.4;flex:1}
 .cert-i{font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--text-muted);letter-spacing:0.08em}
+.cert-view{
+  font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--accent2);
+  letter-spacing:0.08em;margin-top:auto;padding-top:0.75rem;
+  border-top:1px solid rgba(255,255,255,0.05);
+  opacity:0;transition:opacity 0.2s;
+}
+.cert-c:hover .cert-view{opacity:1}
 
 /* PROJECTS */
 #projects{background:var(--bg)}
@@ -439,7 +453,7 @@ footer em{color:var(--accent);font-style:normal}
       </h1>
       <div class="h-role fu d3">
         <span class="h-role-prefix">_</span>
-        Network Security Engineer @ RC MY
+        Network Security Engineer @ Tenang Komuniti
       </div>
       <p class="h-nicks fu d3">
         <b>@KingPinzz</b>&nbsp; · &nbsp;<b>@cutieeepieeee</b>
@@ -544,7 +558,7 @@ footer em{color:var(--accent);font-style:normal}
             <div class="tl-dt"></div>
             <div class="tl-date">Apr 2025 – Present · 1 yr 1 mo</div>
             <div class="tl-role">Network Security Engineer</div>
-            <div class="tl-co">Tenang Komuniti Sdn Bhd | RC MY</div>
+            <div class="tl-co">Tenang Komuniti Sdn Bhd</div>
             <div class="tl-loc">Bandar Baru Bangi, Selangor · Hybrid</div>
             <div class="tl-tags"><span class="tg">Network Security</span><span class="tg">Infrastructure</span></div>
           </div>
@@ -782,12 +796,116 @@ footer em{color:var(--accent);font-style:normal}
       <div class="sec-ln"></div>
     </div>
     <div class="cert-g">
-      <div class="cert-c"><div class="cert-b">CNPEN</div><div class="cert-n">Certified Network Pentester</div><div class="cert-i">The SecOps Group</div></div>
-      <div class="cert-c"><div class="cert-b">ACP</div><div class="cert-n">Alibaba Cloud Certified Professional</div><div class="cert-i">Alibaba Cloud</div></div>
-      <div class="cert-c"><div class="cert-b">CNSP</div><div class="cert-n">Certified Network Security Practitioner</div><div class="cert-i">The SecOps Group</div></div>
-      <div class="cert-c"><div class="cert-b">GCP</div><div class="cert-n">Professional Cloud Architect</div><div class="cert-i">Google Cloud</div></div>
-      <div class="cert-c"><div class="cert-b">WAPT</div><div class="cert-n">Practical Web Application Security &amp; Testing</div><div class="cert-i">TCM Security</div></div>
-      <div class="cert-c"><div class="cert-b">GCS</div><div class="cert-n">Google Cybersecurity Specialization</div><div class="cert-i">Google · Coursera</div></div>
+
+      <!-- CNPEN -->
+      <a href="https://drive.google.com/file/d/1oRSHKfRGEzO_lqsy7tISXqH2BTMmJp2Y/view?usp=sharing" target="_blank" class="cert-c cert-link">
+        <div class="cert-logo-wrap">
+          <div class="cert-logo-badge" style="background:rgba(220,38,38,0.12);border-color:rgba(220,38,38,0.25);color:#f87171">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" fill="currentColor" opacity="0.9"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="cert-issuer-logo">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:var(--text-muted)">THE SECOPS GROUP</span>
+          </div>
+        </div>
+        <div class="cert-b">CNPEN</div>
+        <div class="cert-n">Certified Network Pentester</div>
+        <div class="cert-view">View Certificate →</div>
+      </a>
+
+      <!-- CNSP -->
+      <a href="https://drive.google.com/file/d/1kyhPYbMStjs6C8hy_EjdSS7tRTthEzAR/view?usp=sharing" target="_blank" class="cert-c cert-link">
+        <div class="cert-logo-wrap">
+          <div class="cert-logo-badge" style="background:rgba(220,38,38,0.12);border-color:rgba(220,38,38,0.25);color:#f87171">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" fill="currentColor" opacity="0.9"/><circle cx="12" cy="12" r="2.5" fill="#fff"/></svg>
+          </div>
+          <div class="cert-issuer-logo">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:var(--text-muted)">THE SECOPS GROUP</span>
+          </div>
+        </div>
+        <div class="cert-b">CNSP</div>
+        <div class="cert-n">Certified Network Security Practitioner</div>
+        <div class="cert-view">View Certificate →</div>
+      </a>
+
+      <!-- ACP — Alibaba Cloud -->
+      <a href="https://drive.google.com/file/d/1mwA_p91-R3f4nsqF_6EQ6kRev3AkUurW/view" target="_blank" class="cert-c cert-link">
+        <div class="cert-logo-wrap">
+          <div class="cert-logo-badge" style="background:rgba(255,107,0,0.12);border-color:rgba(255,107,0,0.25);color:#ff6b00">
+            <!-- Alibaba Cloud wordmark-style icon -->
+            <svg width="26" height="22" viewBox="0 0 40 32" fill="none">
+              <rect x="0" y="10" width="8" height="12" rx="4" fill="currentColor"/>
+              <rect x="32" y="10" width="8" height="12" rx="4" fill="currentColor"/>
+              <path d="M10 6 Q20 0 30 6 L30 26 Q20 32 10 26 Z" fill="currentColor" opacity="0.15"/>
+              <path d="M14 13 Q20 10 26 13 L26 19 Q20 22 14 19 Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="cert-issuer-logo">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:var(--text-muted)">ALIBABA CLOUD</span>
+          </div>
+        </div>
+        <div class="cert-b">ACP</div>
+        <div class="cert-n">Alibaba Cloud Certified Professional</div>
+        <div class="cert-view">View Certificate →</div>
+      </a>
+
+      <!-- GCP — Google Cloud -->
+      <a href="https://drive.google.com/file/d/1lW27dzYxM3-tM5gf8Xs_JEWrF9L9oGrh/view?usp=sharing" target="_blank" class="cert-c cert-link">
+        <div class="cert-logo-wrap">
+          <div class="cert-logo-badge" style="background:rgba(66,133,244,0.12);border-color:rgba(66,133,244,0.25);color:#4285f4">
+            <!-- Google Cloud icon (multicolour G-cloud) -->
+            <svg width="24" height="20" viewBox="0 0 48 36" fill="none">
+              <path d="M29.5 6H18.5C13.25 6 9 10.25 9 15.5S13.25 25 18.5 25H29.5C34.75 25 39 20.75 39 15.5S34.75 6 29.5 6Z" fill="#4285F4"/>
+              <path d="M9 15.5C9 20.75 4.75 25 0 25V6C4.75 6 9 10.25 9 15.5Z" fill="#EA4335" opacity="0.8"/>
+              <path d="M39 15.5C39 10.25 43.25 6 48 6V25C43.25 25 39 20.75 39 15.5Z" fill="#34A853" opacity="0.8"/>
+              <rect x="18" y="27" width="4" height="8" rx="2" fill="#FBBC05"/>
+              <rect x="26" y="27" width="4" height="8" rx="2" fill="#4285F4"/>
+            </svg>
+          </div>
+          <div class="cert-issuer-logo">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:var(--text-muted)">GOOGLE CLOUD</span>
+          </div>
+        </div>
+        <div class="cert-b">GCP</div>
+        <div class="cert-n">Professional Cloud Architect</div>
+        <div class="cert-view">View Certificate →</div>
+      </a>
+
+      <!-- WAPT — TCM Security -->
+      <a href="https://drive.google.com/file/d/16KBgpMw_0xy4_HXgRa8B4edU8N0OvnI0/view?usp=sharing" target="_blank" class="cert-c cert-link">
+        <div class="cert-logo-wrap">
+          <div class="cert-logo-badge" style="background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.25);color:#10b981">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M7 12h10M12 7v10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <div class="cert-issuer-logo">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:var(--text-muted)">TCM SECURITY</span>
+          </div>
+        </div>
+        <div class="cert-b">WAPT</div>
+        <div class="cert-n">Practical Web Application Security &amp; Testing</div>
+        <div class="cert-view">View Certificate →</div>
+      </a>
+
+      <!-- GCS — Google / Coursera -->
+      <a href="https://drive.google.com/file/d/1lW27dzYxM3-tM5gf8Xs_JEWrF9L9oGrh/view?usp=sharing" target="_blank" class="cert-c cert-link">
+        <div class="cert-logo-wrap">
+          <div class="cert-logo-badge" style="background:rgba(66,133,244,0.12);border-color:rgba(66,133,244,0.25)">
+            <!-- Google G icon -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+          </div>
+          <div class="cert-issuer-logo">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:var(--text-muted)">GOOGLE · COURSERA</span>
+          </div>
+        </div>
+        <div class="cert-b">GCS</div>
+        <div class="cert-n">Google Cybersecurity Specialization</div>
+        <div class="cert-view">View Certificate →</div>
+      </a>
+
     </div>
   </div>
 </section>
@@ -878,13 +996,16 @@ footer em{color:var(--accent);font-style:normal}
         <div class="ct-lead">Let's build something <span>secure</span> together.</div>
         <p class="ct-sub">Open to collaborations, CTF teaming, freelance security consulting, and new opportunities in network security and cloud infrastructure.</p>
         <div class="ct-cards">
-          <a href="/cdn-cgi/l/email-protection#6008010b090d020f1205041a1a20070d01090c4e030f0d" class="ct-card">
-            <div class="ct-ico">✉</div>
-            <div><div class="ct-lbl">EMAIL</div><div class="ct-val"><span class="__cf_email__" data-cfemail="c6aea7adafaba4a9b4a3a2bcbc86a1aba7afaae8a5a9ab">[email&#160;protected]</span></div></div>
+          <a href="mailto:amirulhakim.mohdyusri@gmail.com" class="ct-card">
+              <div class="ct-ico">✉</div>
+              <div>
+                  <div class="ct-lbl">EMAIL</div>
+                  <div class="ct-val">amirulhakim.mohdyusri@gmail.com</div>
+              </div>
           </a>
-          <a href="tel:+60126068683" class="ct-card">
+          <a href="tel:+601113065853" class="ct-card">
             <div class="ct-ico">📞</div>
-            <div><div class="ct-lbl">PHONE</div><div class="ct-val">+60 12-606 8683</div></div>
+            <div><div class="ct-lbl">PHONE</div><div class="ct-val">+60 11-1306 5853</div></div>
           </a>
         </div>
       </div>
@@ -907,7 +1028,8 @@ footer em{color:var(--accent);font-style:normal}
   <em>KingPinzz</em> · Amirul Hakim Mohd Yusri · Network Security Engineer · Selangor, Malaysia
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script>
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -934,7 +1056,9 @@ const skillIo = new IntersectionObserver((entries) => {
         const target = bar.style.width;
         bar.style.width = '0';
         bar.style.transition = 'width 1.2s cubic-bezier(0.4,0,0.2,1)';
-        requestAnimationFrame(() => { setTimeout(() => bar.style.width = target, 80) });
+        requestAnimationFrame(() => {
+          setTimeout(() => bar.style.width = target, 80)
+        });
       });
       skillIo.unobserve(e.target);
     }
@@ -944,8 +1068,29 @@ const skillIo = new IntersectionObserver((entries) => {
 const sw = document.querySelector('.skills-wrap');
 if (sw) skillIo.observe(sw);
 
-// Nav active state on scroll
+// Nav active state on scroll (COMPLETE VERSION)
 const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('.nav-links a');
+
 window.addEventListener('scroll', () => {
-  let cur =
+  let cur = "";
+
+  sections.forEach(section => {
+    const top = window.scrollY;
+    const offset = section.offsetTop - 120; // adjust sikit untuk navbar height
+    const height = section.offsetHeight;
+    const id = section.getAttribute('id');
+
+    if (top >= offset && top < offset + height) {
+      cur = id;
+    }
+  });
+
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === "#" + cur) {
+      link.classList.add('active');
+    }
+  });
+});
+</script>
